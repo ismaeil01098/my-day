@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إسلام عماد - الصفحة الرئيسية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        :root {
+            --dark-bg: #121212;
+            --darker-bg: #0a0a0a;
+            --card-bg: #1a1a1a;
+            --accent: #74c69d;
+            --accent-light: #a8e6c3;
+            --text: #e0e0e0;
+            --text-light: #b0b0b0;
+            --border: #333333;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--darker-bg), var(--dark-bg));
+            min-height: 100vh;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            padding: 2rem 0 1.5rem;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 500;
+            color: var(--accent-light);
+            margin-bottom: 0.3rem;
+            letter-spacing: 1px;
+        }
+
+        .logo-subtitle {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-weight: 300;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Profile Section */
+        .profile-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem 0 2.5rem;
+            position: relative;
+        }
+
+        .profile-frame {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            padding: 5px;
+            position: relative;
+            box-shadow: 0 4px 15px var(--shadow);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .profile-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--border);
+        }
+
+        .profile-title {
+            font-size: 1.8rem;
+            font-weight: 500;
+            margin-top: 1.2rem;
+            color: var(--text);
+            text-align: center;
+        }
+
+        .profile-subtitle {
+            font-size: 1rem;
+            color: var(--accent);
+            margin-top: 0.3rem;
+            font-weight: 300;
+            text-align: center;
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 1.5rem auto;
+            max-width: 900px;
+        }
+
+        .nav-button {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.2rem 0.5rem;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text);
+            font-size: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            box-shadow: 0 4px 8px var(--shadow);
+        }
+
+        .nav-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+            border-color: var(--accent);
+            background-color: #1e1e1e;
+        }
+
+        .button-icon {
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+            color: var(--accent);
+            transition: var(--transition);
+        }
+
+        .nav-button:hover .button-icon {
+            color: var(--accent-light);
+        }
+
+        .button-text {
+            font-size: 1rem;
+            font-weight: 400;
+            margin-top: 0.3rem;
+        }
+
+        /* Quote Section */
+        .quote-section {
+            max-width: 700px;
+            margin: 2.5rem auto 1.5rem;
+            padding: 1.5rem;
+            border-left: 3px solid var(--accent);
+            background: rgba(30, 30, 30, 0.6);
+            border-radius: 0 8px 8px 0;
+            backdrop-filter: blur(4px);
+        }
+
+        .quote-text {
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        .quote-author {
+            margin-top: 1rem;
+            text-align: left;
+            font-size: 0.95rem;
+            color: var(--accent);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2.5rem 0 1.5rem;
+            margin-top: auto;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-text {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .copyright {
+            margin-top: 1.2rem;
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .profile-title {
+                font-size: 1.6rem;
+            }
+            
+            .nav-buttons {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 12px;
+            }
+            
+            .nav-button {
+                padding: 1rem 0.5rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .nav-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .profile-frame {
+                width: 140px;
+                height: 140px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .nav-buttons {
+                grid-template-columns: 1fr;
+                max-width: 220px;
+            }
+            
+            .logo {
+                font-size: 1.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">إسلام عماد</div>
+            <p class="logo-subtitle">مساحتي الهادئة لتنظيم حياتي وأفكاري</p>
+        </header>
+        
+        <section class="profile-section">
+            <div class="profile-frame">
+                <img src="islam-emad.jpg" alt="إسلام عماد" class="profile-img">
+            </div>
+            <h1 class="profile-title">إسلام عماد</h1>
+            <p class="profile-subtitle">كل شيء في مكانه المنظم</p>
+        </section>
+        
+        <div class="nav-buttons">
+            <a href="islam-data.html" class="nav-button">
+                <i class="fas fa-user-circle button-icon"></i>
+                <div class="button-text">معلوماتي</div>
+            </a>
+            
+            <a href="my-day.html" class="nav-button">
+                <i class="fas fa-calendar-day button-icon"></i>
+                <div class="button-text">يومي</div>
+            </a>
+            
+            <a href="muaeed.html" class="nav-button">
+                <i class="fas fa-clock button-icon"></i>
+                <div class="button-text">مواعيدي</div>
+            </a>
+            
+            <a href="3lakaty.html" class="nav-button">
+                <i class="fas fa-handshake button-icon"></i>
+                <div class="button-text">علاقاتي</div>
+            </a>
+            
+            <a href="flosy.html" class="nav-button">
+                <i class="fas fa-coins button-icon"></i>
+                <div class="button-text">فلوسي</div>
+            </a>
+            
+            <a href="kyabty.html" class="nav-button">
+                <i class="fas fa-book-open button-icon"></i>
+                <div class="button-text">كتاباتي</div>
+            </a>
+        </div>
+        
+        <div class="quote-section">
+            <p class="quote-text">"النظام ليس مجرد ترتيب للأشياء، بل هو ترتيب للذهن والحياة. عندما تكون الأشياء في مكانها، يكون العقل حراً للإبداع والاستمتاع باللحظة."</p>
+            <p class="quote-author">— إسلام عماد</p>
+        </div>
+        
+        <footer>
+            <p class="footer-text">هذه المساحة صممت خصيصاً لتنظيم حياتي وتبسيط أموري اليومية. كل شيء في مكانه، وكل فكرة مسجلة في موضعها.</p>
+            <p class="copyright">© 2023 إسلام عماد. مساحة شخصية</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>يومي - إسلام عماد</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-auth-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        :root {
+            --dark-bg: #121212;
+            --darker-bg: #0a0a0a;
+            --card-bg: #1a1a1a;
+            --accent: #74c69d;
+            --accent-light: #a8e6c3;
+            --text: #e0e0e0;
+            --text-light: #b0b0b0;
+            --border: #333333;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s ease;
+            --completed: #4caf50;
+            --pending: #f44336;
+            --prayer: #2196f3;
+            --notification: #ff9800;
+            --light-bg: #f8f9fa;
+            --light-text: #212529;
+            --light-card: #ffffff;
+            --light-border: #dee2e6;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--darker-bg), var(--dark-bg));
+            min-height: 100vh;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        body.light-mode {
+            background: linear-gradient(135deg, #e6f7ff, #f0f8ff);
+            color: var(--light-text);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem 0;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .light-mode header {
+            border-bottom: 1px solid var(--light-border);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-frame {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            padding: 3px;
+            position: relative;
+            box-shadow: 0 4px 15px var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .light-mode .profile-frame {
+            background-color: var(--light-card);
+            border: 1px solid var(--light-border);
+        }
+
+        .profile-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--border);
+        }
+
+        .light-mode .profile-img {
+            border: 1px solid var(--light-border);
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 500;
+            color: var(--accent-light);
+            letter-spacing: 1px;
+        }
+
+        .light-mode .logo {
+            color: #2a6e4d;
+        }
+
+        .back-button {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .light-mode .back-button {
+            background-color: var(--light-card);
+            border: 1px solid var(--light-border);
+            color: var(--light-text);
+        }
+
+        .back-button:hover {
+            background-color: var(--accent);
+            color: var(--dark-bg);
+        }
+
+        .light-mode .back-button:hover {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .light-mode .theme-toggle {
+            background: var(--light-card);
+            border: 1px solid var(--light-border);
+        }
+
+        .theme-toggle i {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+
+        .light-mode .theme-toggle i {
+            color: #f39c12;
+        }
+
+        /* Main Title */
+        .page-title {
+            font-size: 2.2rem;
+            margin: 1.5rem 0;
+            color: var(--accent);
+            text-align: center;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .light-mode .page-title {
+            color: #2a6e4d;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        .light-mode .page-title::after {
+            background: #2a6e4d;
+        }
+
+        /* Sections */
+        .section-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.8rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+
+        .light-mode .section-card {
+            background-color: var(--light-card);
+            border: 1px solid var(--light-border);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .light-mode .section-header {
+            border-bottom: 1px solid var(--light-border);
+        }
+
+        .section-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(116, 198, 157, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: var(--accent);
+        }
+
+        .light-mode .section-icon {
+            background: rgba(42, 110, 77, 0.1);
+            color: #2a6e4d;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: var(--accent-light);
+        }
+
+        .light-mode .section-title {
+            color: #2a6e4d;
+        }
+
+        .time-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 1.5rem;
+        }
+
+        .time-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .time-label {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .light-mode .time-label {
+            color: #2a6e4d;
+        }
+
+        .time-input {
+            background-color: var(--darker-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .light-mode .time-input {
+            background-color: #f8f9fa;
+            border: 1px solid var(--light-border);
+            color: var(--light-text);
+        }
+
+        .notification-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent);
+        }
+
+        .light-mode input:checked + .slider {
+            background-color: #2a6e4d;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .save-btn {
+            background-color: var(--accent);
+            color: var(--dark-bg);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .light-mode .save-btn {
+            background-color: #2a6e4d;
+            color: white;
+        }
+
+        .save-btn:hover {
+            background-color: var(--accent-light);
+            transform: translateY(-3px);
+        }
+
+        .light-mode .save-btn:hover {
+            background-color: #3d8b66;
+        }
+
+        /* Tables Section */
+        .tables-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 25px;
+            margin-bottom: 3rem;
+        }
+
+        .table-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.8rem;
+            box-shadow: 0 5px 15px var(--shadow);
+            transition: var(--transition);
+        }
+
+        .light-mode .table-card {
+            background-color: var(--light-card);
+            border: 1px solid var(--light-border);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .table-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            border-color: var(--accent);
+        }
+
+        .light-mode .table-card:hover {
+            border-color: #2a6e4d;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .add-btn {
+            background-color: var(--accent);
+            color: var(--dark-bg);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .light-mode .add-btn {
+            background-color: #2a6e4d;
+            color: white;
+        }
+
+        .add-btn:hover {
+            background-color: var(--accent-light);
+        }
+
+        .light-mode .add-btn:hover {
+            background-color: #3d8b66;
+        }
+
+        .delete-all-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 0.8rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .light-mode th, 
+        .light-mode td {
+            border-bottom: 1px solid var(--light-border);
+        }
+
+        th {
+            background-color: rgba(116, 198, 157, 0.1);
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .light-mode th {
+            background-color: rgba(42, 110, 77, 0.1);
+            color: #2a6e4d;
+        }
+
+        .action-cell {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .light-mode .action-btn {
+            color: var(--light-text);
+        }
+
+        .action-btn.edit {
+            background-color: rgba(33, 150, 243, 0.1);
+            color: #2196f3;
+        }
+
+        .light-mode .action-btn.edit {
+            background-color: rgba(33, 150, 243, 0.2);
+        }
+
+        .action-btn.delete {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: #f44336;
+        }
+
+        .light-mode .action-btn.delete {
+            background-color: rgba(244, 67, 54, 0.2);
+        }
+
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .completed {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--completed);
+        }
+
+        .pending {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: var(--pending);
+        }
+
+        .prayer-time {
+            background-color: rgba(33, 150, 243, 0.1);
+            color: var(--prayer);
+        }
+
+        .status-toggle {
+            cursor: pointer;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+            background-color: #ccc;
+            border-radius: 10px;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .status-toggle.active {
+            background-color: var(--completed);
+        }
+
+        .status-toggle::before {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: white;
+            top: 2px;
+            left: 2px;
+            transition: var(--transition);
+        }
+
+        .status-toggle.active::before {
+            left: 22px;
+        }
+        
+        .notification-section {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.8rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+
+        .light-mode .notification-section {
+            background-color: var(--light-card);
+            border: 1px solid var(--light-border);
+        }
+
+        /* Prayer Times */
+        .prayer-times {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 1.5rem;
+        }
+
+        .prayer-card {
+            background-color: rgba(33, 150, 243, 0.1);
+            border: 1px solid var(--prayer);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .light-mode .prayer-card {
+            background-color: rgba(33, 150, 243, 0.2);
+            border: 1px solid #2196f3;
+        }
+
+        .prayer-name {
+            color: var(--prayer);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .light-mode .prayer-name {
+            color: #2196f3;
+        }
+
+        .prayer-time-value {
+            font-size: 1.2rem;
+            color: var(--text);
+        }
+
+        .light-mode .prayer-time-value {
+            color: var(--light-text);
+        }
+
+        /* Notification Log */
+        .notification-log {
+            margin-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            padding-top: 1.5rem;
+        }
+        
+        .light-mode .notification-log {
+            border-top: 1px solid var(--light-border);
+        }
+        
+        .log-item {
+            padding: 0.8rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .light-mode .log-item {
+            border-bottom: 1px solid var(--light-border);
+        }
+        
+        .log-time {
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+        
+        .light-mode .log-time {
+            color: #6c757d;
+        }
+        
+        .log-message {
+            flex-grow: 1;
+            padding: 0 1rem;
+        }
+        
+        .log-status {
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .log-success {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--completed);
+        }
+        
+        .log-error {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: var(--pending);
+        }
+        
+        .log-pending {
+            background-color: rgba(255, 152, 0, 0.1);
+            color: var(--notification);
+        }
+
+        /* Calendar Preview */
+        .calendar-preview {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-top: 1.5rem;
+        }
+        
+        .calendar-day {
+            padding: 0.5rem;
+            text-align: center;
+            border-radius: 8px;
+            background-color: rgba(116, 198, 157, 0.1);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .light-mode .calendar-day {
+            background-color: rgba(42, 110, 77, 0.1);
+        }
+        
+        .calendar-day:hover {
+            background-color: rgba(116, 198, 157, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .light-mode .calendar-day:hover {
+            background-color: rgba(42, 110, 77, 0.2);
+        }
+        
+   .calendar-day.active {
+            background-color: var(--accent);
+            color: var(--dark-bg);
+            font-weight: bold;
+        }
+        
+        .light-mode .calendar-day.active {
+            background-color: #2a6e4d;
+            color: white;
+        }
+        
+        .calendar-day.has-events {
+            position: relative;
+        }
+        
+        .calendar-day.has-events::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent);
+            border-radius: 50%;
+        }
+        
+        .light-mode .calendar-day.has-events::after {
+            background-color: #2a6e4d;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2.5rem 0 1.5rem;
+            margin-top: auto;
+            border-top: 1px solid var(--border);
+        }
+        
+        .light-mode footer {
+            border-top: 1px solid var(--light-border);
+        }
+
+        .footer-text {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+        
+        .light-mode .footer-text {
+            color: #6c757d;
+        }
+
+        .copyright {
+            margin-top: 1.2rem;
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+        
+        .light-mode .copyright {
+            color: #6c757d;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--accent);
+            color: var(--dark-bg);
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1001;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .light-mode .toast {
+            background-color: #2a6e4d;
+            color: white;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast i {
+            font-size: 1.2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .tables-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .back-button {
+                align-self: flex-end;
+            }
+            
+            .time-controls {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .tables-container {
+                gap: 15px;
+            }
+            
+            .table-card {
+                padding: 1.2rem;
+            }
+            
+            th, td {
+                padding: 0.6rem;
+                font-size: 0.9rem;
+            }
+            
+            .prayer-times {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Theme Toggle -->
+        <div class="theme-toggle" id="theme-toggle">
+            <i class="fas fa-moon"></i>
+        </div>
+        
+        <header>
+            <div class="logo-section">
+                <div class="profile-frame">
+                    <div class="profile-img" style="background-color: #2c3e50; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-user" style="color: #74c69d; font-size: 2rem;"></i>
+                    </div>
+                </div>
+                <div class="logo">إسلام عماد</div>
+            </div>
+            <a href="#" class="back-button">
+                <i class="fas fa-arrow-left"></i> العودة للصفحة الرئيسية
+            </a>
+        </header>
+        
+        <h1 class="page-title">تنظيم يومي</h1>
+        
+        <!-- Notification Control Section -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <h2 class="section-title">إدارة الإشعارات</h2>
+            </div>
+            
+            <div class="notification-toggle">
+                <span>تفعيل الإشعارات التلقائية</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="global-notification" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <button class="save-btn" id="test-notification">
+                <i class="fas fa-bell"></i> اختبار الإشعارات
+            </button>
+            
+            <div class="notification-log">
+                <div class="log-item">
+                    <div class="log-time">الآن</div>
+                    <div class="log-message">نظام الإشعارات جاهز للعمل</div>
+                    <div class="log-status log-success">نشط</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Calendar Preview -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <h2 class="section-title">تقويم المهام</h2>
+            </div>
+            
+            <div class="calendar-preview">
+                <div class="calendar-day">الأحد</div>
+                <div class="calendar-day active">الإثنين</div>
+                <div class="calendar-day has-events">الثلاثاء</div>
+                <div class="calendar-day">الأربعاء</div>
+                <div class="calendar-day has-events">الخميس</div>
+                <div class="calendar-day">الجمعة</div>
+                <div class="calendar-day">السبت</div>
+            </div>
+        </div>
+        
+        <!-- Sleep Section -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-bed"></i>
+                </div>
+                <h2 class="section-title">مواعيد النوم والاستيقاظ</h2>
+            </div>
+            
+            <div class="time-controls">
+                <div class="time-group">
+                    <label class="time-label">ميعاد النوم:</label>
+                    <input type="time" class="time-input" id="sleep-time" value="23:00" placeholder="اختر الوقت">
+                </div>
+                
+                <div class="time-group">
+                    <label class="time-label">ميعاد الاستيقاظ:</label>
+                    <input type="time" class="time-input" id="wakeup-time" value="06:00" placeholder="اختر الوقت">
+                </div>
+            </div>
+            
+            <div class="notification-toggle">
+                <span>إرسال إشعار قبل النوم بنصف ساعة</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="sleep-notification" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <button class="save-btn" id="save-sleep">
+                <i class="fas fa-save"></i> حفظ المواعيد
+            </button>
+        </div>
+        
+        <!-- Tables Section -->
+        <div class="tables-container">
+            <!-- Work Schedule -->
+            <div class="table-card">
+                <div class="table-header">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <h2 class="section-title">مواعيد الشغل</h2>
+                    </div>
+                    <button class="add-btn" id="add-work">
+                        <i class="fas fa-plus"></i> إضافة
+                    </button>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>اليوم</th>
+                            <th>الساعة</th>
+                            <th>الشغل</th>
+                            <th>الإشعارات</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="work-table-body">
+                        <!-- Work data will be loaded from Firebase -->
+                    </tbody>
+                </table>
+                
+                <div class="notification-toggle" style="margin-top: 1rem;">
+                    <span>إرسال إشعار قبل الموعد ب 6 ساعات</span>
+      <label class="toggle-switch">
+                        <input type="checkbox" id="work-notification" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <button class="delete-all-btn" id="delete-all-work">
+                    <i class="fas fa-trash-alt"></i> حذف الكل
+                </button>
+            </div>
+            
+            <!-- University Schedule -->
+            <div class="table-card">
+                <div class="table-header">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h2 class="section-title">مواعيد الجامعة</h2>
+                    </div>
+                    <button class="add-btn" id="add-university">
+                        <i class="fas fa-plus"></i> إضافة
+                    </button>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>اليوم</th>
+                            <th>الساعة</th>
+                            <th>المادة</th>
+                            <th>المدة</th>
+                            <th>الحضور</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="university-table-body">
+                        <!-- University data will be loaded from Firebase -->
+                    </tbody>
+                </table>
+                
+                <div class="notification-toggle" style="margin-top: 1rem;">
+                    <span>إرسال ملخص اليوم الدراسي قبل يوم كامل</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="university-notification" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <button class="delete-all-btn" id="delete-all-university">
+                    <i class="fas fa-trash-alt"></i> حذف الكل
+                </button>
+            </div>
+            
+            <!-- Prayer Times -->
+            <div class="table-card">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-mosque"></i>
+                    </div>
+                    <h2 class="section-title">مواعيد الصلوات</h2>
+                </div>
+                
+                <div class="prayer-times">
+                    <div class="prayer-card">
+                        <div class="prayer-name">الفجر</div>
+                        <div class="prayer-time-value">4:30 ص</div>
+                    </div>
+                    <div class="prayer-card">
+                        <div class="prayer-name">الظهر</div>
+                        <div class="prayer-time-value">12:15 م</div>
+                    </div>
+                    <div class="prayer-card">
+                        <div class="prayer-name">العصر</div>
+                        <div class="prayer-time-value">3:45 م</div>
+                    </div>
+                    <div class="prayer-card">
+                        <div class="prayer-name">المغرب</div>
+                        <div class="prayer-time-value">6:10 م</div>
+                    </div>
+                    <div class="prayer-card">
+                        <div class="prayer-name">العشاء</div>
+                        <div class="prayer-time-value">7:45 م</div>
+                    </div>
+                </div>
+                
+                <div class="notification-toggle" style="margin-top: 1.5rem;">
+                    <span>إرسال إشعار قبل الصلاة بنصف ساعة</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="prayer-notification" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Essential Tasks -->
+            <div class="table-card">
+                <div class="table-header">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <h2 class="section-title">المهام الأساسية</h2>
+                    </div>
+                    <button class="add-btn" id="add-task">
+                        <i class="fas fa-plus"></i> إضافة
+                    </button>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>المهمة</th>
+                            <th>الوقت</th>
+                            <th>المدة</th>
+                            <th>الإنجاز</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tasks-table-body">
+                        <!-- Tasks data will be loaded from Firebase -->
+                    </tbody>
+                </table>
+                
+                <div class="notification-toggle" style="margin-top: 1rem;">
+                    <span>إرسال إشعار قبل المهمة بنصف ساعة</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="tasks-notification" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <button class="delete-all-btn" id="delete-all-tasks">
+                    <i class="fas fa-trash-alt"></i> حذف الكل
+                </button>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer>
+            <p class="footer-text">صممت هذه الصفحة لتنظيم يومك ومساعدتك على إدارة وقتك بشكل فعال</p>
+            <p class="copyright">© 2023 إسلام عماد. مساحة شخصية</p>
+        </footer>
+    </div>
+    
+    <script>
+        // ====== Firebase Configuration ======
+        const firebaseConfig = {
+            apiKey: "AIzaSyA-9y3Y6Uc6OTYSbmfNtupfcWHy-9s9nsg",
+            authDomain: "aya2007.firebaseapp.com",
+            projectId: "aya2007",
+            storageBucket: "aya2007.firebasestorage.app",
+            messagingSenderId: "545068053684",
+            appId: "1:545068053684:web:9df8a66201d8006fd313e1",
+            measurementId: "G-QZY05KB9YE"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+        
+        // ====== Firestore Collections ======
+        const workCollection = db.collection('workSchedule');
+        const universityCollection = db.collection('universitySchedule');
+        const tasksCollection = db.collection('essentialTasks');
+        const sleepCollection = db.collection('sleepSchedule');
+        
+        // ====== Helper Functions ======
+        function showToast(message, icon = 'fas fa-check-circle') {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `
+                <i class="${icon}"></i>
+                <span>${message}</span>
+            `;
+            document.body.appendChild(toast);
+            
+            // Play notification sound
+            const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-alert-quick-chime-766.mp3');
+            audio.play().catch(e => console.log('Audio play error:', e));
+            
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+        
+        function playNotificationSound() {
+            const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-alert-quick-chime-766.mp3');
+            audio.play().catch(e => console.log('Audio play error:', e));
+        }
+        
+        function showNotification(message) {
+            const logContainer = document.querySelector('.notification-log');
+            const logItem = document.createElement('div');
+            logItem.className = 'log-item';
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('ar-EG');
+            
+            logItem.innerHTML = `
+                <div class="log-time">${timeString}</div>
+                <div class="log-message">${message}</div>
+                <div class="log-status log-success">تم الإرسال</div>
+            `;
+            
+            logContainer.prepend(logItem);
+            
+            if (!("Notification" in window)) {
+                logItem.querySelector('.log-status').className = 'log-status log-error';
+                logItem.querySelector('.log-status').textContent = 'غير مدعوم';
+                showToast("المتصفح لا يدعم الإشعارات", "fas fa-exclamation-triangle");
+                return;
+            }
+            
+            if (Notification.permission === "granted") {
+                new Notification(message);
+                playNotificationSound();
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        new Notification(message);
+                        playNotificationSound();
+                    } else {
+                        logItem.querySelector('.log-status').className = 'log-status log-error';
+                        logItem.querySelector('.log-status').textContent = 'مرفوض';
+                        showToast(message, "fas fa-bell-slash");
+                    }
+                });
+            } else {
+                logItem.querySelector('.log-status').className = 'log-status log-error';
+                logItem.querySelector('.log-status').textContent = 'مرفوض';
+                showToast(message, "fas fa-bell-slash");
+            }
+        }
+        
+        // ====== Notification Scheduling ======
+        let scheduledNotifications = [];
+        
+        function scheduleNotification(eventType, eventTime, message, offsetMinutes) {
+            // Check if notifications are enabled
+            if (!document.getElementById('global-notification').checked) {
+                return;
+            }
+            
+            // Convert time string to Date object
+            const [hours, minutes] = eventTime.split(':').map(Number);
+            const now = new Date();
+            let eventDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
+            
+            // If event time is in the past, schedule for next day
+            if (eventDate < now) {
+                eventDate.setDate(eventDate.getDate() + 1);
+            }
+            
+            // Calculate notification time
+            const notificationTime = new Date(eventDate.getTime() - offsetMinutes * 60000);
+            const timeUntilNotification = notificationTime - now;
+            
+            // Only schedule if notification is in the future
+            if (timeUntilNotification > 0) {
+                const timeoutId = setTimeout(() => {
+                    showNotification(message);
+                    // Reschedule for next day if it's a recurring event
+                    if (['sleep', 'wakeup', 'prayer', 'task'].includes(eventType)) {
+                        scheduleNotification(eventType, eventTime, message, offsetMinutes);
+                    }
+                }, timeUntilNotification);
+                
+                scheduledNotifications.push(timeoutId);
+                return timeoutId;
+            }
+            
+            return null;
+        }
+        
+        function scheduleAllNotifications() {
+            // Clear any existing notifications
+            clearAllScheduledNotifications();
+            
+            // Only schedule if global notifications are enabled
+            if (!document.getElementById('global-notification').checked) {
+                return;
+            }
+            
+            // Schedule sleep notifications
+            if (document.getElementById('sleep-notification').checked) {
+                const sleepTime = document.getElementById('sleep-time').value;
+                if (sleepTime) {
+                    scheduleNotification('sleep', sleepTime, '⏰ موعد النوم بعد 30 دقيقة', 30);
+                }
+            }
+            
+            // Schedule work notifications
+            if (document.getElementById('work-notification').checked) {
+                // In a real app, this would loop through work events
+                scheduleNotification('work', '09:00', '💼 اجتماع فريق العمل بعد 6 ساعات', 360);
+            }
+            
+            // Schedule university notifications
+            if (document.getElementById('university-notification').checked) {
+                // Daily summary at 8 PM
+                scheduleNotification('university', '20:00', '📚 ملخص اليوم الدراسي للغد', 0);
+            }
+            
+            // Schedule prayer notifications
+            if (document.getElementById('prayer-notification').checked) {
+                const prayers = [
+                    {name: "الفجر", time: "4:30"},
+                    {name: "الظهر", time: "12:15"},
+                    {name: "العصر", time: "15:45"},
+                    {name: "المغرب", time: "18:10"},
+                    {name: "العشاء", time: "19:45"}
+                ];
+                
+                prayers.forEach(prayer => {
+                    scheduleNotification('prayer', prayer.time, `🕌 صلاة ${prayer.name} بعد 30 دقيقة`, 30);
+                });
+            }
+            
+            // Schedule task notifications
+            if (document.getElementById('tasks-notification').checked) {
+                // In a real app, this would loop through tasks
+                scheduleNotification('task', '17:00', '🏃 ممارسة الرياضة بعد 30 دقيقة', 30);
+            }
+        }
+        
+        function clearAllScheduledNotifications() {
+            scheduledNotifications.forEach(timeoutId => clearTimeout(timeoutId));
+            scheduledNotifications = [];
+        }
+        
+        // ====== Firebase Data Management ======
+        function loadWorkSchedule() {
+            workCollection.onSnapshot(snapshot => {
+                const workTable = document.getElementById('work-table-body');
+                workTable.innerHTML = '';
+                
+                snapshot.docs.forEach(doc => {
+                    const data = doc.data();
+                    const row = document.createElement('tr');
+                    row.dataset.id = doc.id;
+                    
+                    row.innerHTML = `
+                        <td>${data.day}</td>
+                        <td>${data.time}</td>
+                        <td>${data.description}</td>
+                        <td class="prayer-time">نشط</td>
+                        <td class="action-cell">
+                            <button class="action-btn edit"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    `;
+                    
+                    workTable.appendChild(row);
+                    
+                    // Add event listeners for edit and delete
+                    row.querySelector('.edit').addEventListener('click', () => {
+                        // Implement edit functionality
+                        showToast('تعديل الموعد قيد التطوير', 'fas fa-tools');
+                    });
+                    
+                    row.querySelector('.delete').addEventListener('click', () => {
+                        workCollection.doc(doc.id).delete()
+                            .then(() => showToast('تم حذف الموعد بنجاح', 'fas fa-trash'))
+                            .catch(error => showToast(`خطأ في الحذف: ${error}`, 'fas fa-exclamation-triangle'));
+                    });
+                });
+            });
+        }
+        
+        function loadUniversitySchedule() {
+            universityCollection.onSnapshot(snapshot => {
+                const universityTable = document.getElementById('university-table-body');
+                universityTable.innerHTML = '';
+                
+                snapshot.docs.forEach(doc => {
+                    const data = doc.data();
+                    const row = document.createElement('tr');
+                    row.dataset.id = doc.id;
+                    
+                    row.innerHTML = `
+                        <td>${data.day}</td>
+                        <td>${data.time}</td>
+                        <td>${data.subject}</td>
+                        <td>${data.duration} دقيقة</td>
+                        <td>
+                            <span class="status-toggle ${data.attended ? 'active' : ''}"></span>
+                        </td>
+                        <td class="action-cell">
+                            <button class="action-btn edit"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    `;
+                    
+                    universityTable.appendChild(row);
+                    
+                    // Add event listeners for edit and delete
+                    row.querySelector('.edit').addEventListener('click', () => {
+                        // Implement edit functionality
+                        showToast('تعديل الموعد قيد التطوير', 'fas fa-tools');
+                    });
+                    
+                    row.querySelector('.delete').addEventListener('click', () => {
+                        universityCollection.doc(doc.id).delete()
+                            .then(() => showToast('تم حذف الموعد بنجاح', 'fas fa-trash'))
+                            .catch(error => showToast(`خطأ في الحذف: ${error}`, 'fas fa-exclamation-triangle'));
+                    });
+                    
+                    // Attendance toggle
+                    const toggle = row.querySelector('.status-toggle');
+                    toggle.addEventListener('click', () => {
+                        const newAttended = !data.attended;
+                        universityCollection.doc(doc.id).update({ attended: newAttended })
+                            .then(() => {
+                                toggle.classList.toggle('active');
+                                showToast(newAttended ? "
+                                                            showToast(newAttended ? 'تم تسجيل الحضور' : 'تم تسجيل الغياب', 
+                                          newAttended ? 'fas fa-check' : 'fas fa-times');
+                            })
+                            .catch(error => showToast(`خطأ في التحديث: ${error}`, 'fas fa-exclamation-triangle'));
+                    });
+                });
+            });
+        }
+        
+        function loadTasks() {
+            tasksCollection.onSnapshot(snapshot => {
+                const tasksTable = document.getElementById('tasks-table-body');
+                tasksTable.innerHTML = '';
+                
+                snapshot.docs.forEach(doc => {
+                    const data = doc.data();
+                    const row = document.createElement('tr');
+                    row.dataset.id = doc.id;
+                    
+                    row.innerHTML = `
+                        <td>${data.task}</td>
+                        <td>${data.time}</td>
+                        <td>${data.duration} دقيقة</td>
+                        <td>
+                            <span class="status-toggle ${data.completed ? 'active' : ''}"></span>
+                        </td>
+                        <td class="action-cell">
+                            <button class="action-btn edit"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    `;
+                    
+                    tasksTable.appendChild(row);
+                    
+                    // Add event listeners for edit and delete
+                    row.querySelector('.edit').addEventListener('click', () => {
+                        // Implement edit functionality
+                        showToast('تعديل المهمة قيد التطوير', 'fas fa-tools');
+                    });
+                    
+                    row.querySelector('.delete').addEventListener('click', () => {
+                        tasksCollection.doc(doc.id).delete()
+                            .then(() => showToast('تم حذف المهمة بنجاح', 'fas fa-trash'))
+                            .catch(error => showToast(`خطأ في الحذف: ${error}`, 'fas fa-exclamation-triangle'));
+                    });
+                    
+                    // Completion toggle
+                    const toggle = row.querySelector('.status-toggle');
+                    toggle.addEventListener('click', () => {
+                        const newCompleted = !data.completed;
+                        tasksCollection.doc(doc.id).update({ completed: newCompleted })
+                            .then(() => {
+                                toggle.classList.toggle('active');
+                                showToast(newCompleted ? 'تم إنجاز المهمة' : 'تم إلغاء إنجاز المهمة', 
+                                          newCompleted ? 'fas fa-check' : 'fas fa-redo');
+                            })
+                            .catch(error => showToast(`خطأ في التحديث: ${error}`, 'fas fa-exclamation-triangle'));
+                    });
+                });
+            });
+        }
+        
+        function loadSleepSchedule() {
+            sleepCollection.limit(1).get().then(snapshot => {
+                if (!snapshot.empty) {
+                    const data = snapshot.docs[0].data();
+                    document.getElementById('sleep-time').value = data.sleepTime || '23:00';
+                    document.getElementById('wakeup-time').value = data.wakeupTime || '06:00';
+                    document.getElementById('sleep-notification').checked = data.notification !== false;
+                }
+            });
+        }
+        
+        // ====== Event Listeners ======
+        document.getElementById('global-notification').addEventListener('change', scheduleAllNotifications);
+        document.getElementById('sleep-notification').addEventListener('change', scheduleAllNotifications);
+        document.getElementById('work-notification').addEventListener('change', scheduleAllNotifications);
+        document.getElementById('university-notification').addEventListener('change', scheduleAllNotifications);
+        document.getElementById('prayer-notification').addEventListener('change', scheduleAllNotifications);
+        document.getElementById('tasks-notification').addEventListener('change', scheduleAllNotifications);
+        
+        document.getElementById('test-notification').addEventListener('click', () => {
+            showNotification('🔔 هذا اختبار للإشعارات! النظام يعمل بشكل صحيح');
+        });
+        
+        document.getElementById('save-sleep').addEventListener('click', () => {
+            const sleepTime = document.getElementById('sleep-time').value;
+            const wakeupTime = document.getElementById('wakeup-time').value;
+            
+            if (!sleepTime || !wakeupTime) {
+                showToast('يرجى تحديد مواعيد النوم والاستيقاظ', 'fas fa-exclamation-triangle');
+                return;
+            }
+            
+            const sleepData = {
+                sleepTime,
+                wakeupTime,
+                notification: document.getElementById('sleep-notification').checked,
+                lastUpdated: new Date()
+            };
+            
+            sleepCollection.limit(1).get().then(snapshot => {
+                if (snapshot.empty) {
+                    sleepCollection.add(sleepData)
+                        .then(() => showToast('تم حفظ مواعيد النوم والاستيقاظ بنجاح', 'fas fa-save'))
+                        .catch(error => showToast(`خطأ في الحفظ: ${error}`, 'fas fa-exclamation-triangle'));
+                } else {
+                    sleepCollection.doc(snapshot.docs[0].id).update(sleepData)
+                        .then(() => showToast('تم تحديث مواعيد النوم والاستيقاظ بنجاح', 'fas fa-sync'))
+                        .catch(error => showToast(`خطأ في التحديث: ${error}`, 'fas fa-exclamation-triangle'));
+                }
+            });
+            
+            scheduleAllNotifications();
+        });
+        
+        // Delete All Buttons
+        document.getElementById('delete-all-work').addEventListener('click', () => {
+            if (confirm('هل أنت متأكد من حذف جميع مواعيد العمل؟')) {
+                workCollection.get().then(snapshot => {
+                    const batch = db.batch();
+                    snapshot.docs.forEach(doc => {
+                        batch.delete(doc.ref);
+                    });
+                    return batch.commit();
+                })
+                .then(() => showToast('تم حذف جميع مواعيد العمل', 'fas fa-trash'))
+                .catch(error => showToast(`خطأ في الحذف: ${error}`, 'fas fa-exclamation-triangle'));
+            }
+        });
+        
+        document.getElementById('delete-all-university').addEventListener('click', () => {
+            if (confirm('هل أنت متأكد من حذف جميع مواعيد الجامعة؟')) {
+                universityCollection.get().then(snapshot => {
+                    const batch = db.batch();
+                    snapshot.docs.forEach(doc => {
+                        batch.delete(doc.ref);
+                    });
+                    return batch.commit();
+                })
+                .then(() => showToast('تم حذف جميع مواعيد الجامعة', 'fas fa-trash'))
+                .catch(error => showToast(`خطأ في الحذف: ${error}`, 'fas fa-exclamation-triangle'));
+            }
+        });
+        
+        document.getElementById('delete-all-tasks').addEventListener('click', () => {
+            if (confirm('هل أنت متأكد من حذف جميع المهام؟')) {
+                tasksCollection.get().then(snapshot => {
+                    const batch = db.batch();
+                    snapshot.docs.forEach(doc => {
+                        batch.delete(doc.ref);
+                    });
+                    return batch.commit();
+                })
+                .then(() => showToast('تم حذف جميع المهام', 'fas fa-trash'))
+                .catch(error => showToast(`خطأ في الحذف: ${error}`, 'fas fa-exclamation-triangle'));
+            }
+        });
+        
+        // Theme Toggle
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            const body = document.body;
+            body.classList.toggle('light-mode');
+            
+            const icon = document.querySelector('#theme-toggle i');
+            if (body.classList.contains('light-mode')) {
+                icon.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'light');
+            } else {
+                icon.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+        
+        // ====== Initialize Page ======
+        window.addEventListener('load', () => {
+            // Request notification permission
+            if (Notification.permission !== "granted") {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        showNotification('تم تفعيل الإشعارات بنجاح');
+                    } else {
+                        showToast('لم يتم تفعيل الإشعارات - يرجى منح الإذن', 'fas fa-bell-slash');
+                    }
+                });
+            } else {
+                showNotification('تم تفعيل الإشعارات بنجاح');
+            }
+            
+            // Load saved theme
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                document.querySelector('#theme-toggle i').className = 'fas fa-sun';
+            }
+            
+            // Load data from Firebase
+            loadWorkSchedule();
+            loadUniversitySchedule();
+            loadTasks();
+            loadSleepSchedule();
+            
+            // Schedule all notifications
+            scheduleAllNotifications();
+            
+            // Daily reset at midnight
+            const now = new Date();
+            const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+            const timeToMidnight = midnight - now;
+            
+            setTimeout(() => {
+                // Reset daily tasks and schedules
+                showNotification('تم تحديث الجدول اليومي');
+                scheduleAllNotifications();
+                
+                // Set next reset
+                setInterval(() => {
+                    showNotification('تم تحديث الجدول اليومي');
+                    scheduleAllNotifications();
+                }, 24 * 60 * 60 * 1000);
+            }, timeToMidnight);
+        });
+    </script>
+</body>
+</html>

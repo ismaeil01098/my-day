@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معلوماتي - إسلام عماد</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        :root {
+            --dark-bg: #121212;
+            --darker-bg: #0a0a0a;
+            --card-bg: #1a1a1a;
+            --accent: #74c69d;
+            --accent-light: #a8e6c3;
+            --text: #e0e0e0;
+            --text-light: #b0b0b0;
+            --border: #333333;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--darker-bg), var(--dark-bg));
+            min-height: 100vh;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-frame {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            padding: 3px;
+            position: relative;
+            box-shadow: 0 4px 15px var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .profile-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--border);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 500;
+            color: var(--accent-light);
+            letter-spacing: 1px;
+        }
+
+        .back-button {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-button:hover {
+            background-color: var(--accent);
+            color: var(--dark-bg);
+        }
+
+        /* Main Content */
+        .page-title {
+            font-size: 2.2rem;
+            margin-bottom: 2rem;
+            color: var(--accent);
+            text-align: center;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.8rem;
+            box-shadow: 0 5px 15px var(--shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            border-color: var(--accent);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(116, 198, 157, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: var(--accent);
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: var(--accent-light);
+        }
+
+        .info-item {
+            margin-bottom: 1.2rem;
+            display: flex;
+        }
+
+        .info-label {
+            width: 130px;
+            color: var(--accent);
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        .info-value {
+            flex-grow: 1;
+            color: var(--text);
+        }
+
+        .contact-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .contact-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(116, 198, 157, 0.1);
+            color: var(--accent);
+            text-decoration: none;
+            padding: 0.5rem 0.9rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .contact-link:hover {
+            background: rgba(116, 198, 157, 0.2);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .visa-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 1rem;
+        }
+
+        .visa-item {
+            background: rgba(30, 30, 30, 0.6);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .visa-title {
+            color: var(--accent);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .visa-number {
+            font-family: monospace;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .visa-details {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 0.5rem;
+        }
+
+        .skill {
+            background: rgba(116, 198, 157, 0.1);
+            color: var(--accent);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(116, 198, 157, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2.5rem 0 1.5rem;
+            margin-top: auto;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-text {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .copyright {
+            margin-top: 1.2rem;
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .back-button {
+                align-self: flex-end;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .info-item {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .info-label {
+                width: 100%;
+            }
+            
+            .visa-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-section">
+                <div class="profile-frame">
+                    <img src="islam-emad.jpg" alt="إسلام عماد" class="profile-img">
+                </div>
+                <div class="logo">إسلام عماد</div>
+            </div>
+            <a href="index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i> العودة للصفحة الرئيسية
+            </a>
+        </header>
+        
+        <h1 class="page-title">معلوماتي الشخصية</h1>
+        
+        <div class="cards-container">
+            <!-- Personal Info Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <h2 class="card-title">المعلومات الشخصية</h2>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">الاسم الرسمي:</div>
+                    <div class="info-value">اسماعيل عماد اسماعيل السيد</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">اسم الشهرة:</div>
+                    <div class="info-value">إسلام</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">الرقم القومي:</div>
+                    <div class="info-value">30503182101571</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">تاريخ الميلاد:</div>
+                    <div class="info-value">18 مارس 2005</div>
+                </div>
+            </div>
+            
+            <!-- Education Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h2 class="card-title">التعليم</h2>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">الجامعة:</div>
+                    <div class="info-value">جامعة القاهرة</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">الكلية:</div>
+                    <div class="info-value">كلية العلوم</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">القسم:</div>
+                    <div class="info-value">كيمياء/ فيزياء</div>
+                </div>
+            </div>
+            
+            <!-- Work Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h2 class="card-title">العمل الحالي</h2>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">الوظيفة:</div>
+                    <div class="info-value">أستاذ علوم</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">المؤسسة:</div>
+                    <div class="info-value">مدرسة الجيل الجديد الخاصة</div>
+                </div>
+            </div>
+            
+            <!-- Skills Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h2 class="card-title">المهارات</h2>
+                </div>
+                
+                <div class="skills-container">
+                    <div class="skill">صنعة محارة</div>
+                    <div class="skill">برمجة مواقع</div>
+                    <div class="skill">تجارة</div>
+                    <div class="skill">اقتصاد</div>
+                    <div class="skill">لغة إنجليزية</div>
+                    <div class="skill">لغة إسبانيا</div>
+                </div>
+            </div>
+            
+            <!-- Contact Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h2 class="card-title">الإيميلات</h2>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-value">islamemad010989@gmail.com</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-value">islam01098973022@gmail.com</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-value">microsoftislam1@gmail.com</div>
+                </div>
+            </div>
+            
+            <!-- Social Media Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <h2 class="card-title">وسائل التواصل</h2>
+                </div>
+                
+                <div class="contact-links">
+                    <a href="https://www.facebook.com/share/1FidHXb6FB/" class="contact-link" target="_blank">
+                        <i class="fab fa-facebook"></i> فيسبوك
+                    </a>
+                    
+                    <a href="https://www.instagram.com/islamemad803?igsh=MXQ4MzB4NnZjM3JxYw==" class="contact-link" target="_blank">
+                        <i class="fab fa-instagram"></i> انستجرام (1)
+                    </a>
+                    
+                    <a href="https://www.instagram.com/islamemad803?igsh=MXQ4MzB4NnZjM3JxYw==" class="contact-link" target="_blank">
+                        <i class="fab fa-instagram"></i> انستجرام (2)
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Phone Numbers Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <h2 class="card-title">أرقام الهواتف</h2>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-value">01122104596 (عليه محفظة)</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-value">01202326992</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-value">01011598392 (عليه محفظة)</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-value">01108759190 (محفظة فوري)</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-value">01557257390</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-value">01559614590</div>
+                </div>
+            </div>
+            
+            <!-- Visa Cards -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <h2 class="card-title">بطاقات الدفع</h2>
+                </div>
+                
+                <h3 style="margin: 1rem 0 0.5rem; color: var(--accent-light);">بنك أهلي (1)</h3>
+                <div class="visa-grid">
+                    <div class="visa-item">
+                        <div class="visa-title">رقم البطاقة</div>
+                        <div class="visa-number">5078 0350 5914 5591</div>
+                        <div class="visa-details">
+                            <span>تاريخ الانتهاء: 02/29</span>
+                            <span>CVV: 574</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3 style="margin: 1.5rem 0 0.5rem; color: var(--accent-light);">بنك أهلي (2)</h3>
+                <div class="visa-grid">
+                    <div class="visa-item">
+                        <div class="visa-title">رقم البطاقة</div>
+                        <div class="visa-number">5078 0350 6140 9142</div>
+                        <div class="visa-details">
+                            <span>تاريخ الانتهاء: 02/20</span>
+                            <span>CVV: 774</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3 style="margin: 1.5rem 0 0.5rem; color: var(--accent-light);">فوري</h3>
+                <div class="visa-grid">
+                    <div class="visa-item">
+                        <div class="visa-title">رقم البطاقة</div>
+                        <div class="visa-number">5078 0867 1794 7522</div>
+                        <div class="visa-details">
+                            <span>تاريخ الانتهاء: 01/30</span>
+                            <span>CVV: 319</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p class="footer-text">هذه المساحة تحتوي على جميع المعلومات الشخصية والاتصالات اللازمة</p>
+            <p class="copyright">© 2023 إسلام عماد. مساحة شخصية</p>
+        </footer>
+    </div>
+</body>
+</html>
