@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جدول مذاكرة فيزياء الثانوية العامة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #4a148c, #6a1b9a, #8e24aa);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #e0e0e0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0 30px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 20px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 150px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .stat-box .number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffeb3b;
+            margin-bottom: 5px;
+        }
+        
+        .days-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .day-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .day-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .day-card.active {
+            background: rgba(156, 39, 176, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .day-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ffeb3b;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+        }
+        
+        .chapter {
+            background: #7b1fa2;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .day-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .study-hours {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            color: #e0e0e0;
+            margin-top: 10px;
+        }
+        
+        .tasks-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            backdrop-filter: blur(5px);
+            display: none;
+        }
+        
+        .tasks-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .tasks-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .tasks-title {
+            font-size: 1.8rem;
+            color: #ffeb3b;
+        }
+        
+        .close-btn {
+            background: #7b1fa2;
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .task-list {
+            list-style-type: none;
+        }
+        
+        .task-item {
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            position: relative;
+            padding-left: 35px;
+            transition: all 0.3s ease;
+        }
+        
+        .task-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .task-item::before {
+            content: "•";
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: #ffeb3b;
+        }
+        
+        .method {
+            background: rgba(156, 39, 176, 0.3);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-top: 8px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .days-container {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .stat-box {
+                min-width: 120px;
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>جدول مذاكرة فيزياء الثانوية العامة</h1>
+            <p class="subtitle">برنامج مكثف لمدة ٢٠ يوماً (٦-٨ ساعات يومياً) لتغطية منهج الفيزياء بالكامل</p>
+            
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="number">٢٠</div>
+                    <div>يوم مذاكرة</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">١٤٠</div>
+                    <div>ساعة دراسة</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">٨</div>
+                    <div>أبواب دراسية</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">٣٦</div>
+                    <div>درس رئيسي</div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="days-container" id="daysContainer">
+            <!-- Days will be populated by JavaScript -->
+        </div>
+        
+        <div class="tasks-container" id="tasksContainer">
+            <div class="tasks-header">
+                <h2 class="tasks-title" id="tasksTitle">مهمات اليوم ١</h2>
+                <button class="close-btn" id="closeBtn">×</button>
+            </div>
+            <ul class="task-list" id="taskList">
+                <!-- Tasks will be populated by JavaScript -->
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // جدول المذاكرة حسب المنهج المصري
+        const studyPlan = [
+            {
+                day: 1,
+                chapter: "الباب الأول",
+                title: "التيار الكهربي وقوانينه",
+                lessons: ["التيار الكهربي", "قانون أوم", "قانون كيرشوف"],
+                hours: 6,
+                method: "فيديو + مسائل"
+            },
+            {
+                day: 2,
+                chapter: "الباب الأول",
+                title: "تطبيقات على القوانين الكهربية",
+                lessons: ["تطبيقات قانون أوم", "مسائل كيرشوف", "مراجعة الباب الأول"],
+                hours: 7,
+                method: "مسائل + مراجعة"
+            },
+            {
+                day: 3,
+                chapter: "الباب الثاني",
+                title: "المغناطيسية - الجزء الأول",
+                lessons: ["المجال المغناطيسي حول سلك مستقيم", "كثافة الفيض المغناطيسي", "المجال حول ملف دائري"],
+                hours: 6,
+                method: "فيديو + مسائل"
+            },
+            {
+                day: 4,
+                chapter: "الباب الثاني",
+                title: "المغناطيسية - الجزء الثاني",
+                lessons: ["القوة المغناطيسية على سلك مستقيم", "القوة بين سلكين متوازيين", "العزم المغناطيسي على ملف"],
+                hours: 7,
+                method: "فيديو + مسائل"
+            },
+            {
+                day: 5,
+                chapter: "الباب الثاني",
+                title: "أجهزة القياس المغناطيسية",
+                lessons: ["الجلفانومتر ذو الملف", "أميتر وفولتميتر التيار المستمر", "مراجعة الباب الثاني"],
+                hours: 8,
+                method: "مسائل + مراجعة"
+            },
+            {
+                day: 6,
+                chapter: "الباب الثالث",
+                title: "الحث الكهرومغناطيسي",
+                lessons: ["قانون فاراداي للحث", "الحث الذاتي", "الحث المتبادل"],
+                hours: 6,
+                method: "فيديو + مسائل"
+            },
+            {
+                day: 7,
+                chapter: "الباب الثالث",
+                title: "القوة الدافعة الكهربية",
+                lessons: ["القوة الدافعة في سلك متحرك", "قاعدة لنز", "قاعدة فلمنج"],
+                hours: 7,
+                method: "فيديو + مسائل"
+            },
+            {
+                day: 8,
+                chapter: "الباب الثالث",
+                title: "تطبيقات الحث الكهرومغناطيسي",
+                lessons: ["المولد الكهربي", "المحول الكهربي", "الموتور"],
+                hours: 6,
+                method: "فيديو + مسائل"
+            },
+            {
+                day: 9,
+                chapter: "الباب الثالث",
+                title: "مراجعة الباب الثالث",
+                lessons: ["مراجعة شاملة", "حل مسائل متنوعة", "اختبار قصير"],
+                hours: 8,
+                method: "مراجعة + اختبار"
+            },
+            {
+                day: 10,
+                chapter: "الباب الرابع",
+                title: "دوائر التيار المتردد",
+                lessons: ["الأميتر الحراري", "دائرة مقاومة أومية", "دائرة ملف حث"],
+                hours: 6,
+                method: "فيديو + مسائل"
+            },
+            {
+                day: 11,
+                chapter: "الباب الرابع",
+                title: "المكثفات في دوائر التيار المتردد",
+                lessons: ["دائرة مكثف", "الرنين في دوائر RLC", "القدرة في دوائر التيار المتردد"],
+                hours: 7,
+                method: "فيديو + مسائل"
+            },
+            {
+                day: 12,
+                chapter: "الباب الرابع",
+                title: "مراجعة الباب الرابع",
+                lessons: ["مراجعة شاملة", "حل مسائل متنوعة", "اختبار قصير"],
+                hours: 6,
+                method: "مراجعة + اختبار"
+            },
+            {
+                day: 13,
+                chapter: "الباب الخامس",
+                title: "ازدواجية الموجة والجسيم",
+                lessons: ["تجربة شقي يونج", "الظاهرة الكهروضوئية", "تفسير أينشتاين"],
+                hours: 7,
+                method: "فيديو + مسائل"
+            },
+            {
+                day: 14,
+                chapter: "الباب الخامس",
+                title: "طيف الأشعة السينية",
+                lessons: ["تأثير كومبتون", "الطول الموجي للجسيمات", "مبدأ عدم التأكد"],
+                hours: 6,
+                method: "فيديو + مسائل"
+            },
+            {
+                day: 15,
+                chapter: "الباب السادس",
+                title: "الأطياف الذرية",
+                lessons: ["طيف ذرة الهيدروجين", "نظرية بور", "عيوب نظرية بور"],
+                hours: 7,
+                method: "فيديو + مسائل"
+            },
+            {
+                day: 16,
+                chapter: "الباب السادس",
+                title: "الليزر",
+                lessons: ["مبادئ عمل الليزر", "أنواع الليزر", "تطبيقات الليزر"],
+                hours: 6,
+                method: "فيديو + مسائل"
+            },
+            {
+                day: 17,
+                chapter: "الباب السابع",
+                title: "الالكترونيات الحديثة",
+                lessons: ["الصمام الثنائي", "الترانزستور", "الدوائر المتكاملة"],
+                hours: 7,
+                method: "فيديو + مسائل"
+            },
+            {
+                day: 18,
+                chapter: "الباب الثامن",
+                title: "مراجعة عامة - الجزء الأول",
+                lessons: ["مراجعة الأبواب 1-4", "حل نماذج امتحانات", "تجميع نقاط الضعف"],
+                hours: 8,
+                method: "مراجعة + حل نماذج"
+            },
+            {
+                day: 19,
+                chapter: "الباب الثامن",
+                title: "مراجعة عامة - الجزء الثاني",
+                lessons: ["مراجعة الأبواب 5-8", "حل نماذج امتحانات", "مراجعة القوانين"],
+                hours: 8,
+                method: "مراجعة + حل نماذج"
+            },
+            {
+                day: 20,
+                chapter: "المراجعة النهائية",
+                title: "اختبار شامل",
+                lessons: ["حل امتحان تجريبي كامل", "تحليل الأخطاء", "مراجعة النقاط الصعبة"],
+                hours: 6,
+                method: "اختبار + تحليل"
+            }
+        ];
+
+        // إنشاء بطاقات الأيام
+        const daysContainer = document.getElementById('daysContainer');
+        
+        studyPlan.forEach(dayPlan => {
+            const dayCard = document.createElement('div');
+            dayCard.className = 'day-card';
+            dayCard.dataset.day = dayPlan.day;
+            
+            dayCard.innerHTML = `
+                <div class="day-header">
+                    <div class="day-number">${dayPlan.day}</div>
+                    <div class="chapter">${dayPlan.chapter}</div>
+                </div>
+                <div class="day-title">${dayPlan.title}</div>
+                <div class="study-hours">
+                    <span>⏱️ ${dayPlan.hours} ساعات</span>
+                    <span class="method">${dayPlan.method}</span>
+                </div>
+            `;
+            
+            daysContainer.appendChild(dayCard);
+        });
+
+        // عناصر DOM
+        const tasksContainer = document.getElementById('tasksContainer');
+        const tasksTitle = document.getElementById('tasksTitle');
+        const taskList = document.getElementById('taskList');
+        const closeBtn = document.getElementById('closeBtn');
+        
+        // معالجة النقر على بطاقة اليوم
+        document.querySelectorAll('.day-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const dayNum = this.dataset.day;
+                const dayPlan = studyPlan.find(plan => plan.day == dayNum);
+                
+                // تحديث العنوان
+                tasksTitle.textContent = `مهمات اليوم ${dayNum} - ${dayPlan.title}`;
+                
+                // تحديث المهام
+                taskList.innerHTML = '';
+                dayPlan.lessons.forEach(lesson => {
+                    const li = document.createElement('li');
+                    li.className = 'task-item';
+                    li.textContent = lesson;
+                    taskList.appendChild(li);
+                });
+                
+                // إضافة طريقة المذاكرة
+                const methodItem = document.createElement('li');
+                methodItem.className = 'task-item';
+                methodItem.innerHTML = `طريقة المذاكرة: <span class="method">${dayPlan.method}</span>`;
+                taskList.appendChild(methodItem);
+                
+                // إظهار حاوية المهام
+                tasksContainer.classList.add('active');
+                
+                // إزالة النشط من جميع البطاقات وإضافته للبطاقة الحالية
+                document.querySelectorAll('.day-card').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                
+                // التمرير إلى حاوية المهام
+                tasksContainer.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+        
+        // زر الإغلاق
+        closeBtn.addEventListener('click', function() {
+            tasksContainer.classList.remove('active');
+            document.querySelectorAll('.day-card').forEach(c => c.classList.remove('active'));
+        });
+    </script>
+</body>
+</html>
